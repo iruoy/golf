@@ -3,6 +3,7 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\BelongsToMany;
 use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -25,6 +26,16 @@ class Game extends Resource
     public static $title = 'name';
 
     /**
+     * Get the search result subtitle for the resource.
+     *
+     * @return string
+     */
+    public function subtitle()
+    {
+        return "Flights: {$this->flights->count()}";
+    }
+
+    /**
      * The columns that should be searched.
      *
      * @var array
@@ -32,6 +43,13 @@ class Game extends Resource
     public static $search = [
         'name',
     ];
+
+    /**
+     * The relationships that should be eager loaded on index queries.
+     *
+     * @var array
+     */
+    public static $with = ['flights'];
 
     /**
      * Get the fields displayed by the resource.
@@ -47,6 +65,8 @@ class Game extends Resource
             Text::make('Name')->sortable(),
 
             HasMany::make('Flights'),
+
+            BelongsToMany::make('Golfers')
         ];
     }
 

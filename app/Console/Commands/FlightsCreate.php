@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Flight;
 use App\Models\Game;
 use App\Models\Golfer;
 use Illuminate\Console\Command;
@@ -23,22 +22,9 @@ class FlightsCreate extends Command
         $game->name = 'test';
         $game->save();
 
-        $golfers = Golfer::orderBy('handicap', 'DESC')->get();
+        $golfers = Golfer::pluck('id')->toArray();
 
-        $min = ceil($golfers->count() / 4);
-
-        $chunks = [];
-        foreach ($golfers as $i => $golfer) {
-            $chunks[$i % $min][] = $golfer->id;
-        }
-
-        foreach ($chunks as $chunk) {
-            $flight = new Flight();
-            $flight->game_id = $game->id;
-            $flight->save();
-
-            $flight->golfers()->sync($chunk);
-        }
+        $game->golfers()->attach($golfers);
 
         return 0;
     }

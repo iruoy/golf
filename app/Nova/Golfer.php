@@ -70,6 +70,8 @@ class Golfer extends Resource
                 ->sortable(),
 
             BelongsToMany::make('Flights'),
+
+            BelongsToMany::make('Games'),
         ];
     }
 

@@ -35,6 +35,13 @@ class Flight extends Resource
     ];
 
     /**
+     * Indicates if the resource should be displayed in the sidebar.
+     *
+     * @var bool
+     */
+    public static $displayInNavigation = false;
+
+    /**
      * Get the fields displayed by the resource.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -45,9 +52,19 @@ class Flight extends Resource
         return [
             ID::make(__('ID'), 'id')->sortable(),
 
-            Number::make('Average Handicap')->sortable(),
+            Number::make('Golfers', function () {
+                return $this->golfers->count();
+            }),
 
-            Number::make('Playing Handicap')->sortable(),
+            Number::make('Average Handicap')->min(-10)
+                ->max(54)
+                ->step(0.1)
+                ->sortable(),
+
+            Number::make('Playing Handicap')->min(-10)
+                ->max(54)
+                ->step(0.1)
+                ->sortable(),
 
             BelongsTo::make('Game'),
 

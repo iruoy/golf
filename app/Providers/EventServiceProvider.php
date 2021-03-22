@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Events\GameGolferEvent;
 use App\Events\FlightGolferEvent;
 use App\Listeners\UpdateFlightHandicaps;
+use App\Listeners\UpdateFlights;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -22,7 +24,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         FlightGolferEvent::class => [
             UpdateFlightHandicaps::class,
-        ]
+        ],
+        GameGolferEvent::class => [
+            UpdateFlights::class,
+        ],
     ];
 
     /**
