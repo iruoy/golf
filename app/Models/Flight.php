@@ -26,6 +26,6 @@ class Flight extends Model
      */
     public function golfers(): BelongsToMany
     {
-        return $this->belongsToMany(Golfer::class);
+        return $this->belongsToMany(Golfer::class)->using(FlightGolfer::class);
     }
 }

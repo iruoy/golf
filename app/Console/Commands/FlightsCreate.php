@@ -27,36 +27,17 @@ class FlightsCreate extends Command
 
         $min = ceil($golfers->count() / 4);
 
-        $flights = [];
-
+        $chunks = [];
         foreach ($golfers as $i => $golfer) {
-            if ($i < $min) {
-                $flight = new Flight();
-                $flight->game_id = $game->id;
-                $flight->save();
-
-                $flights[$i] = $flight;
-            }
-
-            $flights[$i % $min]->golfers()->attach($golfer->id);
+            $chunks[$i % $min][] = $golfer->id;
         }
 
-        foreach ($flights as $flight) {
-            $count = $flight->golfers()->count();
-            $lowest = 9999.0;
-            $sum = 0.0;
-
-            foreach ($flight->golfers as $golfer) {
-                if ($lowest > $golfer->handicap) {
-                    $lowest = $golfer->handicap;
-                }
-
-                $sum += $golfer->handicap;
-            }
-
-            $flight->average_handicap = $sum / $count;
-            $flight->playing_handicap = $lowest / 2 + ($sum - $lowest) / ($count - 1) / 10;
+        foreach ($chunks as $chunk) {
+            $flight = new Flight();
+            $flight->game_id = $game->id;
             $flight->save();
+
+            $flight->golfers()->sync($chunk);
         }
 
         return 0;
